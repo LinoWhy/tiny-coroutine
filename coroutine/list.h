@@ -4,6 +4,19 @@
 #define smp_wmb()	wmb()
 #define wmb()	asm volatile("" ::: "memory")
 
+#define offsetof(TYPE, MEMBER) ((size_t) &((TYPE*)0)->MEMBER)
+#define container_of(ptr, type, member) ({          \
+        const typeof( ((type *)0)->member ) *__mptr = (const typeof( ((type *)0)->member ) *)(ptr); \
+        (type *)( (char *)__mptr - offsetof(type,member) );})
+
+/*
+ * These are non-NULL pointers that will result in page faults
+ * under normal circumstances, used to verify that nobody uses
+ * non-initialized list entries.
+ */
+#define LIST_POISON1  ((void *) 0x00100100)
+#define LIST_POISON2  ((void *) 0x00200200)
+
 /*
  * Simple doubly linked list implementation.
  *
